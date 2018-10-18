@@ -1,5 +1,5 @@
 // How to run the program
-// $ go run server.go
+// $ go run http2_server.go
 // $ curl --http2 -X POST http://localhost:9090 -d "Hello"
 
 package main
