@@ -1,3 +1,6 @@
+// How to run the program
+// $ go run hello.go
+
 package main
 
 import "fmt"
