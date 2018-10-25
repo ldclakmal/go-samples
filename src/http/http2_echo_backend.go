@@ -1,6 +1,6 @@
 // How to run the program
-// $ go run http2_server.go
-// $ curl --http2 -X POST http://localhost:9090 -d "Hello"
+// $ go run http2_echo_backend.go
+// $ curl --http2 -X POST http://localhost:9090/nyseStock/stocks -d "Hello"
 
 package main
 
@@ -13,10 +13,10 @@ import (
 
 func main() {
 	var srv http.Server
-	srv.Addr = ":9090"
+	srv.Addr = ":9191"
 	//Enable http2
 	http2.ConfigureServer(&srv, nil)
-	http.HandleFunc("/", echo)
+	http.HandleFunc("/nyseStock/stocks", echo)
 	srv.ListenAndServe()
 }
 
