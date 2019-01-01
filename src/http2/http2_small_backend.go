@@ -22,7 +22,7 @@ func main() {
 }
 
 func smallPayload(w http.ResponseWriter, req *http.Request) {
-	log.Printf("Request connection: %s, path: %s", req.Proto, req.URL.Path[1:])
+	//log.Printf("Request connection: %s, path: %s", req.Proto, req.URL.Path[1:])
 	payload := "{ \"foo\": \"bar\" }"
 	fmt.Fprintf(w, "%s\n", payload)
 }

@@ -18,7 +18,7 @@ func main() {
 }
 
 func echoHttp(w http.ResponseWriter, req *http.Request) {
-	log.Printf("Request connection: %s, path: %s", req.Proto, req.URL.Path[1:])
+	//log.Printf("Request connection: %s, path: %s", req.Proto, req.URL.Path[1:])
 	defer req.Body.Close()
 	contents, err := ioutil.ReadAll(req.Body)
 	if err != nil {
