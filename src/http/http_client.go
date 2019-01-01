@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-const URL = "http://localhost:9191/nyseStock/stocks"
+const URL = "http://localhost:9191/hello/sayHello"
 
 func main() {
 	resp, err := http.Post(URL, "text/plain", bytes.NewBufferString("Hello"))

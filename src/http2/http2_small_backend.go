@@ -1,6 +1,6 @@
 // How to run the program
 // $ go run http2_small_backend.go
-// $ curl --http2 -X POST http://localhost:9191/nyseStock/stocks -d "Hello"
+// $ curl --http2 -X POST http://localhost:9191/hello/sayHello -d "Hello"
 
 package http2
 
@@ -16,8 +16,8 @@ func main() {
 	srv.Addr = ":9191"
 	//Enable http2
 	http2.ConfigureServer(&srv, nil)
-	http.HandleFunc("/nyseStock/stocks", smallPayload)
-	log.Printf("Serving on http://localhost:9191/nyseStock/stocks")
+	http.HandleFunc("/hello/sayHello", smallPayload)
+	log.Printf("Serving on http://localhost:9191/hello/sayHello")
 	log.Fatal(srv.ListenAndServeTLS("../cert/server.crt", "../cert/server.key"))
 }
 

@@ -1,6 +1,6 @@
 // How to run the program
 // $ go run http_echo_backend.go
-// $ curl -X POST http://localhost:9191/nyseStock/stocks -d "Hello"
+// $ curl -X POST http://localhost:9191/hello/sayHello -d "Hello"
 
 package main
 
@@ -12,8 +12,8 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/nyseStock/stocks", echoHttp)
-	log.Printf("Serving on http://localhost:9191/nyseStock/stocks")
+	http.HandleFunc("/hello/sayHello", echoHttp)
+	log.Printf("Serving on http://localhost:9191/hello/sayHello")
 	log.Fatal(http.ListenAndServe(":9191", nil))
 }
 
