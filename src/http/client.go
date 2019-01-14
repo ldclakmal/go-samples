@@ -1,7 +1,10 @@
 // How to run the program
-// $ go run client.go
-// $ go run client.go -d "Hello Go"
-// $ go run client.go -v 2
+//
+// Run as HTTP/1.1 client
+// $ go run client.go -url "http://localhost:9090/passthrough" -d "Hello Go"
+
+// Run as HTTP/2 client
+// $ go run client.go -v 2 -url "https://localhost:9090/passthrough" -d "Hello Go"
 
 package main
 
@@ -20,6 +23,7 @@ import (
 
 // By default version flag is set to 1 (refers to HTTP/1.1)
 var httpVersion = flag.Int("v", 1, "HTTP version")
+var requestUrl = flag.String("url", "http://localhost:9191/hello/sayHello", "Request URL")
 var requestBody = flag.String("d", "Hello", "Request body")
 
 func main() {
@@ -53,9 +57,7 @@ func main() {
 	}
 
 	// Perform the request
-	resp, err := client.Post("http://localhost:9090/passthrough", "text/plain", bytes.NewBufferString(*requestBody))
-	//resp, err := client.Post("https://localhost:9191/hello/sayHello", "text/plain", bytes.NewBufferString("Hello"))
-	//resp, err := client.Get(url)
+	resp, err := client.Post(*requestUrl, "text/plain", bytes.NewBufferString(*requestBody))
 	if err != nil {
 		log.Fatalf("Failed get: %s", err)
 	}

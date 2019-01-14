@@ -1,11 +1,17 @@
 // How to run the program
+//
+// Run as HTTP/1.1 echo backend
 // $ go run backend.go
-// $ curl http://localhost:9191/hello/sayHello -d "Hello"
-// $ curl --http2 -k https://localhost:9191/hello/sayHello -d "Hello"
+// Test - $ curl http://localhost:9191/hello/sayHello -d "Hello"
+//
+// Run as HTTP/2 echo backend
+// $ go run backend.go -v 2
+// Test - $ curl --http2 -k https://localhost:9191/hello/sayHello -d "Hello"
 
 package main
 
 import (
+	"flag"
 	"fmt"
 	"golang.org/x/net/http2"
 	"io/ioutil"
@@ -13,9 +19,18 @@ import (
 	"net/http"
 )
 
+// By default version flag is set to 1 (refers to HTTP/1.1)
+var httpVersion = flag.Int("v", 1, "HTTP version")
+
 func main() {
-	httpServer()
-	//http2Server()
+	flag.Parse()
+
+	switch *httpVersion {
+	case 1:
+		httpServer()
+	case 2:
+		http2Server()
+	}
 }
 
 func httpServer() {
@@ -34,7 +49,7 @@ func http2Server() {
 }
 
 func echoPayload(w http.ResponseWriter, req *http.Request) {
-	//log.Printf("Request connection: %s, path: %s", req.Proto, req.URL.Path[1:])
+	log.Printf("Request connection: %s, path: %s", req.Proto, req.URL.Path[1:])
 	defer req.Body.Close()
 	contents, err := ioutil.ReadAll(req.Body)
 	if err != nil {
@@ -42,10 +57,4 @@ func echoPayload(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, err.Error(), 500)
 	}
 	fmt.Fprintf(w, "%s\n", string(contents))
-}
-
-func smallPayload(w http.ResponseWriter, req *http.Request) {
-	//log.Printf("Request connection: %s, path: %s", req.Proto, req.URL.Path[1:])
-	payload := "Hello from GO HTTP/2"
-	fmt.Fprintf(w, "%s\n", payload)
 }
