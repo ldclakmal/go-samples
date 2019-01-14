@@ -2,7 +2,7 @@
 //
 // Run as HTTP/1.1 echo backend
 // $ go run backend.go
-// Test - $ curl http://localhost:9191/hello/sayHello -d "Hello"
+// Test - $ curl -k https://localhost:9191/hello/sayHello -d "Hello"
 //
 // Run as HTTP/2 echo backend
 // $ go run backend.go -v 2
@@ -27,25 +27,26 @@ func main() {
 
 	switch *httpVersion {
 	case 1:
-		httpServer()
+		httpBackend()
 	case 2:
-		http2Server()
+		http2Backend()
 	}
 }
 
-func httpServer() {
+func httpBackend() {
 	http.HandleFunc("/hello/sayHello", echoPayload)
-	log.Printf("Serving HTTP/1.1 on http://localhost:9191/hello/sayHello")
-	log.Fatal(http.ListenAndServe(":9191", nil))
+	log.Printf("Serving HTTP/1.1 on https://localhost:9191/hello/sayHello")
+	log.Fatal(http.ListenAndServeTLS(":9191", "../cert/server.crt", "../cert/server.key", nil))
 }
 
-func http2Server() {
-	var srv http.Server
-	srv.Addr = ":9191"
-	_ = http2.ConfigureServer(&srv, nil)
+func http2Backend() {
+	var httpServer = http.Server{
+		Addr: ":9191",
+	}
+	_ = http2.ConfigureServer(&httpServer, nil)
 	http.HandleFunc("/hello/sayHello", echoPayload)
 	log.Printf("Serving HTTP/2 on https://localhost:9191/hello/sayHello")
-	log.Fatal(srv.ListenAndServeTLS("../cert/server.crt", "../cert/server.key"))
+	log.Fatal(httpServer.ListenAndServeTLS("../cert/server.crt", "../cert/server.key"))
 }
 
 func echoPayload(w http.ResponseWriter, req *http.Request) {

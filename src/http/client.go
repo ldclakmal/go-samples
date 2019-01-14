@@ -1,7 +1,7 @@
 // How to run the program
 //
 // Run as HTTP/1.1 client
-// $ go run client.go -url "http://localhost:9090/passthrough" -d "Hello Go"
+// $ go run client.go -url "https://localhost:9090/passthrough" -d "Hello Go"
 
 // Run as HTTP/2 client
 // $ go run client.go -v 2 -url "https://localhost:9090/passthrough" -d "Hello Go"
@@ -23,7 +23,7 @@ import (
 
 // By default version flag is set to 1 (refers to HTTP/1.1)
 var httpVersion = flag.Int("v", 1, "HTTP version")
-var requestUrl = flag.String("url", "http://localhost:9191/hello/sayHello", "Request URL")
+var requestUrl = flag.String("url", "https://localhost:9191/hello/sayHello", "Request URL")
 var requestBody = flag.String("d", "Hello", "Request body")
 
 func main() {

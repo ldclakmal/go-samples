@@ -2,7 +2,7 @@
 //
 // Run as HTTP/1.1 passthrough
 // $ go run passthrough.go
-// Test - $ curl http://localhost:9090/passthrough -d "Hello"
+// Test - $ curl -k https://localhost:9090/passthrough -d "Hello"
 //
 // Run as HTTP/2 passthrough
 // $ go run passthrough.go -v 2
@@ -49,19 +49,23 @@ func main() {
 		client.Transport = &http.Transport{
 			TLSClientConfig: tlsConfig,
 		}
+		var httpServer = http.Server{
+			Addr: ":9090",
+		}
 		http.HandleFunc("/passthrough", forwardProxy)
-		log.Printf("Serving HTTP/1.1 passthrough on http://localhost:9090/passthrough")
-		log.Fatal(http.ListenAndServe(":9090", nil))
+		log.Printf("Serving HTTP/1.1 passthrough on https://localhost:9090/passthrough")
+		log.Fatal(httpServer.ListenAndServeTLS("../cert/server.crt", "../cert/server.key"))
 	case 2:
 		client.Transport = &http2.Transport{
 			TLSClientConfig: tlsConfig,
 		}
-		var srv http.Server
-		srv.Addr = ":9090"
-		_ = http2.ConfigureServer(&srv, nil)
+		var httpServer = http.Server{
+			Addr: ":9090",
+		}
+		_ = http2.ConfigureServer(&httpServer, nil)
 		http.HandleFunc("/passthrough", forwardProxy)
 		log.Printf("Serving HTTP/2 passthrough on https://localhost:9090/passthorugh")
-		log.Fatal(srv.ListenAndServeTLS("../cert/server.crt", "../cert/server.key"))
+		log.Fatal(httpServer.ListenAndServeTLS("../cert/server.crt", "../cert/server.key"))
 	}
 }
 
