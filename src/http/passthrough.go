@@ -5,7 +5,7 @@
 // Test - $ curl -k https://localhost:9090/passthrough -d "Hello"
 //
 // Run as HTTP/2 passthrough
-// $ go run passthrough.go -v 2
+// $ go run passthrough.go -version 2 -maxstream 100
 // Test - $ curl --http2 -k https://localhost:9090/passthrough -d "Hello"
 //
 // NOTE: The relevant backend should be up and running in order to test.
@@ -23,7 +23,11 @@ import (
 )
 
 // By default version flag is set to 1 (refers to HTTP/1.1)
-var httpVersion = flag.Int("v", 1, "HTTP version")
+var httpVersion = flag.Int("version", 1, "HTTP version")
+
+// By default the number of maximum concurrent streams per connection is set as 100
+var maxConcurrentStreams = flag.Int("maxstream", 100, "HTTP/2 max concurrent streams")
+
 var client = &http.Client{}
 
 func main() {
@@ -62,7 +66,10 @@ func main() {
 		var httpServer = http.Server{
 			Addr: ":9090",
 		}
-		_ = http2.ConfigureServer(&httpServer, nil)
+		var http2Server = http2.Server{
+			MaxConcurrentStreams: uint32(*maxConcurrentStreams),
+		}
+		_ = http2.ConfigureServer(&httpServer, &http2Server)
 		http.HandleFunc("/passthrough", forwardProxy)
 		log.Printf("Serving HTTP/2 passthrough on https://localhost:9090/passthorugh")
 		log.Fatal(httpServer.ListenAndServeTLS("../cert/server.crt", "../cert/server.key"))

@@ -5,7 +5,7 @@
 // Test - $ curl -k https://localhost:9191/hello/sayHello -d "Hello"
 //
 // Run as HTTP/2 echo backend
-// $ go run backend.go -v 2
+// $ go run backend.go -version 2 -maxstream 100
 // Test - $ curl --http2 -k https://localhost:9191/hello/sayHello -d "Hello"
 
 package main
@@ -20,7 +20,10 @@ import (
 )
 
 // By default version flag is set to 1 (refers to HTTP/1.1)
-var httpVersion = flag.Int("v", 1, "HTTP version")
+var httpVersion = flag.Int("version", 1, "HTTP version")
+
+// By default the number of maximum concurrent streams per connection is set as 100
+var maxConcurrentStreams = flag.Int("maxstream", 100, "HTTP/2 max concurrent streams")
 
 func main() {
 	flag.Parse()
@@ -43,7 +46,10 @@ func http2Backend() {
 	var httpServer = http.Server{
 		Addr: ":9191",
 	}
-	_ = http2.ConfigureServer(&httpServer, nil)
+	var http2Server = http2.Server{
+		MaxConcurrentStreams: uint32(*maxConcurrentStreams),
+	}
+	_ = http2.ConfigureServer(&httpServer, &http2Server)
 	http.HandleFunc("/hello/sayHello", echoPayload)
 	log.Printf("Serving HTTP/2 on https://localhost:9191/hello/sayHello")
 	log.Fatal(httpServer.ListenAndServeTLS("../cert/server.crt", "../cert/server.key"))
