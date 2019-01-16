@@ -57,7 +57,7 @@ func main() {
 			Addr: ":9090",
 		}
 		http.HandleFunc("/passthrough", forwardProxy)
-		log.Printf("Serving HTTP/1.1 passthrough on https://localhost:9090/passthrough")
+		log.Printf("Go Pssthrough: { HTTPVersion = 1 }; serving on https://localhost:9090/passthrough")
 		log.Fatal(httpServer.ListenAndServeTLS("../cert/server.crt", "../cert/server.key"))
 	case 2:
 		client.Transport = &http2.Transport{
@@ -71,7 +71,7 @@ func main() {
 		}
 		_ = http2.ConfigureServer(&httpServer, &http2Server)
 		http.HandleFunc("/passthrough", forwardProxy)
-		log.Printf("Serving HTTP/2 passthrough on https://localhost:9090/passthorugh")
+		log.Printf("Go Pssthrough: { HTTPVersion = 2, MaxStreams = %v }; serving on https://localhost:9090/passthrough", *maxConcurrentStreams)
 		log.Fatal(httpServer.ListenAndServeTLS("../cert/server.crt", "../cert/server.key"))
 	}
 }

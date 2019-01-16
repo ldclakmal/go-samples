@@ -38,7 +38,7 @@ func main() {
 
 func httpBackend() {
 	http.HandleFunc("/hello/sayHello", echoPayload)
-	log.Printf("Serving HTTP/1.1 on https://localhost:9191/hello/sayHello")
+	log.Printf("Go Backend: { HTTPVersion = 1 }; serving on https://localhost:9191/hello/sayHello")
 	log.Fatal(http.ListenAndServeTLS(":9191", "../cert/server.crt", "../cert/server.key", nil))
 }
 
@@ -51,7 +51,7 @@ func http2Backend() {
 	}
 	_ = http2.ConfigureServer(&httpServer, &http2Server)
 	http.HandleFunc("/hello/sayHello", echoPayload)
-	log.Printf("Serving HTTP/2 on https://localhost:9191/hello/sayHello")
+	log.Printf("Go Backend: { HTTPVersion = 2, MaxStreams = %v }; serving on https://localhost:9191/hello/sayHello", *maxConcurrentStreams)
 	log.Fatal(httpServer.ListenAndServeTLS("../cert/server.crt", "../cert/server.key"))
 }
 
