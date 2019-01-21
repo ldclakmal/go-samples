@@ -56,7 +56,7 @@ func main() {
 		var httpServer = http.Server{
 			Addr: ":9090",
 		}
-		http.HandleFunc("/passthrough", forwardProxy)
+		http.HandleFunc("/passthrough", reverseProxy)
 		log.Printf("Go Pssthrough: { HTTPVersion = 1 }; serving on https://localhost:9090/passthrough")
 		log.Fatal(httpServer.ListenAndServeTLS("../cert/server.crt", "../cert/server.key"))
 	case 2:
@@ -70,13 +70,13 @@ func main() {
 			MaxConcurrentStreams: uint32(*maxConcurrentStreams),
 		}
 		_ = http2.ConfigureServer(&httpServer, &http2Server)
-		http.HandleFunc("/passthrough", forwardProxy)
+		http.HandleFunc("/passthrough", reverseProxy)
 		log.Printf("Go Pssthrough: { HTTPVersion = 2, MaxStreams = %v }; serving on https://localhost:9090/passthrough", *maxConcurrentStreams)
 		log.Fatal(httpServer.ListenAndServeTLS("../cert/server.crt", "../cert/server.key"))
 	}
 }
 
-func forwardProxy(w http.ResponseWriter, req *http.Request) {
+func reverseProxy(w http.ResponseWriter, req *http.Request) {
 	log.Printf("Request connection: %s, path: %s", req.Proto, req.URL.Path[1:])
 	backendReq, _ := http.NewRequest(req.Method, "https://localhost:9191/hello/sayHello", req.Body)
 	resp, _ := client.Do(backendReq)
