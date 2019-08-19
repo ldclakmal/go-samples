@@ -41,10 +41,10 @@ func main() {
 
 	switch *httpVersion {
 	case 1:
-		log.Printf("Go Backend: { HTTPVersion = 1 }; serving on https://localhost:%s%s", 9191, "/hello/sayHello")
+		log.Printf("Go Backend: { HTTPVersion = 1 }; Serving on https://localhost:%d%s", 9191, "/hello/sayHello")
 		httpBackend()
 	case 2:
-		log.Printf("Go Backend: { HTTPVersion = 2, MaxStreams = %v }; serving on https://localhost:%s%s", *maxConcurrentStreams, 9191, "/hello/sayHello")
+		log.Printf("Go Backend: { HTTPVersion = 2, MaxStreams = %v }; Serving on https://localhost:%d%s", *maxConcurrentStreams, 9191, "/hello/sayHello")
 		http2Backend()
 	}
 }
