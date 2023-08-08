@@ -5,7 +5,7 @@ Sample codes written with [Go](https://golang.org/) programming language.
 
 ### Compatibility
 
-**Go version:** 1.11.1
+**Go version:** 1.20
 
 ## How to run
 
@@ -13,4 +13,4 @@ Sample codes written with [Go](https://golang.org/) programming language.
 
 2. Run the particular *.go* file by executing following command. Special instructions are given on top of the file as comments.
 
-    `$ go run file_name.go`
+    `$ go run <file_name.go>`
